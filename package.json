@@ -1,0 +1,19 @@
+{
+  "name": "keywordsmith-ai",
+  "version": "1.0.0",
+  "description": "A 100% local tool that runs on Ollama and open-source LLMs to generate SEO-optimized category descriptions for e-commerce. No cloud, no data leaks: just fast, private, and consistent copywriting directly on your machine.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AllWorkNoPlay-95/KeywordSmith-AI.git"
+  },
+  "author": "Samuele Mancuso (AllWorkNoPlay-95)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/AllWorkNoPlay-95/KeywordSmith-AI/issues"
+  },
+  "homepage": "https://github.com/AllWorkNoPlay-95/KeywordSmith-AI#readme"
+}
