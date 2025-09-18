@@ -9,7 +9,7 @@ export function logError(str: string): void {
 }
 
 export function logWarn(str: string): void {
-    console.log(chalk.black(" ⚠️ WARN ") + " " + str);
+    console.log(chalk.bgYellow.black(" ⚠️ WARN ") + " " + str);
 }
 
 export function logInfo(str: string): void {
