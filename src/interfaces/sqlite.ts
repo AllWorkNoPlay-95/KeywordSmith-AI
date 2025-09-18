@@ -10,11 +10,11 @@ export function connectSqLite() {
     return db;
 }
 
-export function writeToDb(o: Product | Category, kind: "product" | "category") {
+export function writeToDb(o: Product | Category, kind: "products" | "categories") {
     if (o.output.length === 0) return;
     const db = connectSqLite();
     const stmt = db.prepare(`
-        INSERT INTO ? (id, name, output)
+        INSERT INTO ${kind} (id, name, output)
         VALUES (?, ?, ?)
         ON CONFLICT
             (id)
@@ -22,7 +22,7 @@ export function writeToDb(o: Product | Category, kind: "product" | "category") {
             name = excluded.name,
             output = excluded.output
     `);
-    stmt.run(kind, o.id, o.name, o.output);
+    stmt.run(o.id, o.name, o.output);
 }
 
 export function readFromDb(id: number) {

@@ -2,6 +2,7 @@ import {COMPANY_NAME, LANGUAGE} from "../config";
 import {prompt} from "../interfaces/ollama";
 import {Category} from "../fetch/categories";
 import {writeToDb} from "../interfaces/sqlite";
+import {cleanOutput} from "../helpers/cleanOutput";
 
 export const CATEGORIES_KEYWORD_GENERATION_PROMPT = `
 You are an expert SEO copywriter for an ${LANGUAGE} e-commerce of stationery and school supplies.
@@ -17,23 +18,20 @@ Constraints:
 - No competitor names, no fluff.
 - Add the company name somewhere in the description for SEO purposes: ${COMPANY_NAME}.
 - Reply with only the the html to copy and paste, stop immediately, no follow ups.
+- Only use <h2>, <strong>, and <p> tags. Never use any other html tags.
+- Use only ${LANGUAGE} as language
 
 The category, written in ${LANGUAGE}, is: 
 `;
 
 export async function generateCategoriesOutput(cat: Category) {
-    const steps = [
-
-        // `Find eventual markup language signs and rewrite it in HTML, ready for copy and paste: `,
-    ];
-
     let result = "";
 
     // logDebug(step);
     result = await prompt(CATEGORIES_KEYWORD_GENERATION_PROMPT + cat.name);
 
-    result = result.replace(/```|```html/, "");
+    result = cleanOutput(result);
 
     cat.output = result;
-    writeToDb(cat, "category");
+    writeToDb(cat, "categories");
 }
