@@ -3,6 +3,8 @@ import {SQLITE_DB_PATH} from "../config";
 import {Product} from "../fetch/products";
 import {Category} from "../fetch/categories";
 
+type Kind = "products" | "categories";
+
 export function connectSqLite() {
     const db = new Database(SQLITE_DB_PATH);
     db.prepare("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, output TEXT)").run();
@@ -10,7 +12,7 @@ export function connectSqLite() {
     return db;
 }
 
-export function writeToDb(o: Product | Category, kind: "products" | "categories") {
+export function writeToDb(o: Product | Category, kind: Kind) {
     if (o.output.length === 0) return;
     const db = connectSqLite();
     const stmt = db.prepare(`
@@ -25,5 +27,14 @@ export function writeToDb(o: Product | Category, kind: "products" | "categories"
     stmt.run(o.id, o.name, o.output);
 }
 
-export function readFromDb(id: number) {
+export function readFromDb(id: number, kind: Kind) {
+    const db = connectSqLite();
+    const stmt = db.prepare(`
+        SELECT *
+        FROM ${kind}
+        WHERE id = ?
+    `);
+    const result = stmt.get(id);
+    if (kind === "products") return result as Product;
+    else if (kind === "categories") return result as Category; //I hate else if returns, but i hate messy code more
 }
