@@ -38,3 +38,12 @@ export function readFromDb(id: number, kind: Kind) {
     if (kind === "products") return result as Product;
     else if (kind === "categories") return result as Category; //I hate else if returns, but i hate messy code more
 }
+
+export function getAllIdsDb(kind: Kind) {
+    const db = connectSqLite();
+    const stmt = db.prepare(`
+        SELECT id
+        FROM ${kind}
+    `);
+    return stmt.pluck().all();
+}
