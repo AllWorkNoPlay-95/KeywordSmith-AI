@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,14 +21,17 @@
   "homepage": "https://github.com/AllWorkNoPlay-95/KeywordSmith-AI#readme",
   "devDependencies": {
     "@types/node": "^24.3.1",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.10",
+    "ts-jest": "^29.4.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@jest/globals": "^29.7.0",
+    "axios": "^1.11.0",
     "chalk": "^5.6.2",
     "dotenv": "^17.2.2",
-    "ollama": "^0.5.18",
-    "axios": "^1.11.0"
+    "ollama": "^0.5.18"
   }
 }
