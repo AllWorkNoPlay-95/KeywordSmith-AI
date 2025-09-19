@@ -18,10 +18,14 @@ export async function test() {
         throw new Error("No response from Ollama");
 }
 
-export async function prompt(p: string) {
+export async function prompt(sys: string, p: string) {
     const response = await ollama.chat({
         model: MODEL,
         messages: [
+            {
+                role: "system",
+                content: sys
+            },
             {
                 role: 'user',
                 content: p
