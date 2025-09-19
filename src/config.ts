@@ -6,6 +6,11 @@ export const TOKEN = process.env.API_TOKEN || "";
 export const API_DOWN_ROOT = process.env.API_DOWN_ROOT;
 export const API_CATEGORIES_DOWN_URL = API_DOWN_ROOT + process.env.API_CATEGORIES_DOWN_URL;
 export const API_PRODUCTS_DOWN_URL = API_DOWN_ROOT + process.env.API_PRODUCTS_DOWN_URL;
+
+export const API_UP_ROOT = process.env.API_UP_ROOT || API_DOWN_ROOT;
+export const API_CATEGORIES_UP_URL = API_UP_ROOT + process.env.API_CATEGORIES_UP_URL || API_CATEGORIES_DOWN_URL;
+export const API_PRODUCTS_UP_URL = API_UP_ROOT + process.env.API_PRODUCTS_UP_URL || API_PRODUCTS_DOWN_URL;
+
 export const CATEGORIES_TARGET_KEY = process.env.CATEGORIES_TARGET_KEY || "name";
 export const PRODUCTS_TARGET_KEY = process.env.PRODUCTS_TARGET_KEY || "name";
 export const LANGUAGE = process.env.LANGUAGE || "en";
