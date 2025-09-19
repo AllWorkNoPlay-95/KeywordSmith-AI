@@ -6,9 +6,9 @@ import {getAllIdsDb} from "./interfaces/sqlite";
 (async function generateProducts(): Promise<void> {
     const products = await fetchProducts();
     const productsIds = getAllIdsDb("products");
-    for (const cat of products) {
-        if (productsIds.includes(cat.id)) continue;
-        logOk("Processing: " + cat.name);
-        await generateProductsOutput(cat);
+    for (const p of products) {
+        if (productsIds.includes(parseInt(String(p.id)))) continue;
+        logOk("Processing: " + p.name);
+        await generateProductsOutput(p);
     }
 })().then(() => logOk("Done!"));

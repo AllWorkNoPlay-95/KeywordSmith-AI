@@ -7,7 +7,7 @@ import {getAllIdsDb} from "./interfaces/sqlite";
     const categories = await fetchCategories();
     const categoriesIds = getAllIdsDb("categories");
     for (const cat of categories) {
-        if (categoriesIds.includes(cat.id)) continue;
+        if (categoriesIds.includes(parseInt(String(cat.id)))) continue;
         logOk("Processing: " + cat.name);
         await generateCategoriesOutput(cat);
     }
