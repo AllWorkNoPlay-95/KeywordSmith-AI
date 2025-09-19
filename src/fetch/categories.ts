@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {API_CATEGORIES_URL, CATEGORIES_TARGET_KEY, TOKEN} from "../config";
+import {API_CATEGORIES_DOWN_URL, CATEGORIES_TARGET_KEY, TOKEN} from "../config";
 
 export type Category = {
     id: number,
@@ -8,7 +8,7 @@ export type Category = {
 }
 
 export async function fetchCategories() {
-    const {data} = await axios.get(API_CATEGORIES_URL + "?token=" + TOKEN);
+    const {data} = await axios.get(API_CATEGORIES_DOWN_URL + "?token=" + TOKEN);
     let resultArray: Category[] = [];
     for (const cat of data) {
         resultArray.push({

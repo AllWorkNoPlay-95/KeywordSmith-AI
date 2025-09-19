@@ -6,7 +6,7 @@ import {SYSTEM_PROMPT} from "./system";
 
 export const PRODUCT_DESCRIPTION_PROMPT =
     SYSTEM_PROMPT + `
-- Length: 200–250 words.
+- Length: 250–300 words.
 - Start with a short engaging intro about the product’s main purpose/benefit.
 `;
 
