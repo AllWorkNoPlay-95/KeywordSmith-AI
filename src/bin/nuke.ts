@@ -1,6 +1,6 @@
 import fs from "fs";
-import {SQLITE_DB_PATH} from "./config";
-import {logError, logWarn} from "./cli/styles";
+import {SQLITE_DB_PATH} from "../config";
+import {logError, logWarn} from "../cli/styles";
 
 try {
     fs.unlinkSync(SQLITE_DB_PATH);

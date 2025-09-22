@@ -5,12 +5,12 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "start": "ts-node src/index.js",
-    "products": "ts-node src/generateProducts.ts",
-    "categories": "ts-node src/generateCategories.ts",
-    "sendCategories": "ts-node src/sendCategories.ts",
-    "sendProducts": "ts-node src/sendProducts.ts",
-    "nuke": "ts-node src/nuke.ts ",
+    "start": "ts-node src/index.ts",
+    "products": "ts-node src/bin/generateProducts.ts",
+    "categories": "ts-node src/bin/generateCategories.ts",
+    "sendCategories": "ts-node src/bin/sendCategories.ts",
+    "sendProducts": "ts-node src/bin/sendProducts.ts",
+    "nuke": "ts-node src/bin/nuke.ts ",
     "test": "jest"
   },
   "repository": {

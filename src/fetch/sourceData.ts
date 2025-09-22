@@ -5,16 +5,12 @@ import {Payload} from "../types/Payload";
 type Result = { type: Payload["type"], data: Payload[] };
 
 export async function fetchSource(filter: Payload["type"][] | false = false) {
-    let resultArray: Result[] = [];
+    let resultArray: Payload[] = [];
     for (const pay of PAYLOAD_CONFIGS) {
         if (filter && !filter.includes(pay.type)) continue;
-        let thisResultArray: Result = {
-            type: pay.type,
-            data: []
-        };
         const {data} = await axios.get(pay.down + "?token=" + TOKEN);
         for (const d of data) {
-            thisResultArray.data.push({
+            resultArray.push({
                 id: d.id,
                 name: d[pay.targetKey],
                 output: "",
