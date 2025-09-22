@@ -8,6 +8,8 @@
     "start": "ts-node src/index.js",
     "products": "ts-node src/generateProducts.ts",
     "categories": "ts-node src/generateCategories.ts",
+    "sendCategories": "ts-node src/sendCategories.ts",
+    "sendProducts": "ts-node src/sendProducts.ts",
     "nuke": "ts-node src/nuke.ts ",
     "test": "jest"
   },

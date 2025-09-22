@@ -1,9 +1,8 @@
 const {test, expect} = require("@jest/globals");
 const {fetchSource} = require("../../fetch/sourceData");
-const {fetchProducts} = require("../../fetch/products");
 test("Check API endpoints", async () => {
-    const categories = await fetchSource();
+    const categories = await fetchSource(["category"]);
     expect(categories).toBeDefined();
-    const products = await fetchProducts();
+    const products = await fetchSource(["product"]);
     expect(products).toBeDefined();
-});
+}, 20000);
