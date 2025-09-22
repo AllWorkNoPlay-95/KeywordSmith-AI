@@ -1,5 +1,5 @@
 import {prompt} from "../interfaces/ollama";
-import {Category} from "../fetch/categories";
+import {Category} from "../fetch/sourceData";
 import {writeToDb} from "../interfaces/sqlite";
 import {cleanOutput} from "../helpers/cleanOutput";
 import {SYSTEM_PROMPT} from "./system";
