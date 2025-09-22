@@ -4,7 +4,18 @@ import {Payload} from "../types/Payload";
 
 export function connectSqLite() {
     const db = new Database(SQLITE_DB_PATH);
-    db.prepare("CREATE TABLE IF NOT EXISTS ai_descriptions (id INTEGER PRIMARY KEY, name TEXT, output TEXT, type VARCHAR NOT NULL)").run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS ai_descriptions
+                (
+                    pk     INTEGER PRIMARY KEY,
+                    id     INTEGER,
+                    name   TEXT,
+                    output TEXT,
+                    type   VARCHAR(255) NOT NULL
+                );
+    `).run();
+
+    db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS control
+        ON ai_descriptions (id, type);`).run();
     return db;
 }
 
