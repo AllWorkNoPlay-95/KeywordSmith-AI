@@ -55,3 +55,13 @@ export function getAllIdsDb(type: Payload["type"]): number[] {
     `);
     return stmt.pluck().all(type) as number[];
 }
+
+export function dumpDb(type: Payload["type"]): Payload[] {
+    const db = connectSqLite();
+    const stmt = db.prepare(`
+        SELECT id, name, output, type
+        FROM ai_descriptions
+        WHERE type = ?
+    `);
+    return stmt.all(type) as Payload[];
+}

@@ -5,7 +5,7 @@ import {Payload} from "../types/Payload";
 import {PAYLOAD_CONFIGS} from "../../config";
 import SYSTEM_PROMPT from "../../tuning/system.js";
 
-export async function generatePayloadOutput(p: Payload) {
+export async function generatePayloadOutput(p: Payload): Promise<Payload> {
     const thisConfig = PAYLOAD_CONFIGS.find(c => c.type === p.type);
     let result = await prompt(
         SYSTEM_PROMPT,
@@ -16,4 +16,5 @@ export async function generatePayloadOutput(p: Payload) {
 
     p.output = result;
     writeToDb(p);
+    return p;
 }

@@ -1,9 +1,10 @@
-import {getAllIdsDb} from "./interfaces/sqlite";
-import {logOk} from "./cli/styles";
+import {dumpDb, getAllIdsDb} from "./interfaces/sqlite";
+import {logInfo, logOk, logWarn} from "./cli/styles";
 import {fetchSource} from "./fetch/sourceData";
 import {PAYLOAD_CONFIGS} from "../config";
 import {generatePayloadOutput} from "./prompts/payload";
 import args from "node-args";
+import {sendGeneratedDescriptions} from "./send/generatedDescriptions";
 
 async function main(): Promise<void> {
     let filter: string[] = [];
@@ -20,21 +21,39 @@ async function main(): Promise<void> {
             }
             if (!found) throw new Error(`Invalid filter: ${f}`);
         }
-        logOk(
+        logWarn(
             `Only processing ${filter.join(", ")}`
         )
     }
-    for (const conf of PAYLOAD_CONFIGS) {
-        if (filter.length > 0 && !filter.includes(conf.type)) continue; //Apply filter here
+    let eligible_configs = PAYLOAD_CONFIGS;
+    if (filter.length > 0) eligible_configs = eligible_configs.filter(c => filter.includes(c.type));
+    for (const conf of eligible_configs) {
         const thisPayload = await fetchSource([conf.type]);
         const thisPayloadIds = getAllIdsDb(conf.type);
-        for (const thisPayloadi in thisPayload) {
-            const thisPayloadItem = thisPayload[thisPayloadi];
+        for (const payloadIndex in thisPayload) {
+            const thisPayloadItem = thisPayload[payloadIndex];
             if (thisPayloadIds.includes(parseInt(String(thisPayloadItem.id)))) continue;
-            logOk(`Processing ${conf.type} ${parseInt(thisPayloadi) + 1}/${thisPayload.length} (${((parseInt(thisPayloadi) + 1) / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
-            await generatePayloadOutput(thisPayloadItem);
+            logInfo(`Processing ${conf.type} ${parseInt(payloadIndex) + 1}/${thisPayload.length} (${((parseInt(payloadIndex) + 1) / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
+            let completeP = await generatePayloadOutput(thisPayloadItem);
+            if (args["upload"] === "during") {
+                logInfo(`Uploading ${conf.type} ${completeP.id}: ${completeP.name}`);
+                await sendGeneratedDescriptions(completeP);
+            }
         }
     }
+
+    if (args["upload"] === "after") {
+        for (const conf of eligible_configs) {
+            logInfo(`Dumping ${conf.type} DB and uploading Everything, Everywhere, All at once...`); // EE
+            const dump = dumpDb(conf.type);
+            logOk(`Dumped ${dump.length} ${conf.type} payloads`);
+            for (const d of dump) {
+                await sendGeneratedDescriptions(d);
+            }
+        }
+    }
+
+    logOk("Done!");
 }
 
 main().then();
