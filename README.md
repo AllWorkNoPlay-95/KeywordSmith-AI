@@ -4,9 +4,10 @@
 
 ## A 100% Local SEO-optimized Description Generator for E-commerce
 
-KeywordSmith AI is a completely local tool that runs on Ollama and open-source LLMs to generate SEO-optimized category
-and product descriptions. It works entirely on your machine: no cloud, no data leaks, just fast, private, and consistent
-copywriting.
+KeywordSmith AI is a powerful local tool that leverages Ollama and open-source Large Language Models to generate
+SEO-optimized category and product descriptions for e-commerce platforms. It operates entirely on your machine,
+ensuring data privacy and delivering consistent, high-quality copywriting with HTML formatting and optimal length
+for search engine visibility.
 
 ## Key Features
 
@@ -18,9 +19,15 @@ copywriting.
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- [Ollama](https://ollama.ai/) installed and configured on your system
-- A supported LLM model (default: qwen2.5:7b)
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Ollama](https://ollama.ai/) installed and running on your system
+- A supported LLM model (recommended: llama3.1:8b or mixtral:8x7b)
+
+### Installing Ollama
+
+1. Visit [Ollama.ai](https://ollama.ai/)
+2. Download and install for your operating system
+3. Pull the recommended model: `ollama pull llama3.1:8b`
 
 ## Installation
 
@@ -40,13 +47,15 @@ cp .env.example .env
 
 ## Configuration
 
-Edit the `.env` file to configure:
+Edit the `.env` file to configure the following parameters:
 
-- API token (if needed)
-- API URLs
-- Ollama LLM model to use
-- Language for content generation
-- Other custom parameters
+- `API_TOKEN`: Your API authentication token
+- `API_DOWN_ROOT`: Base URL for fetching data
+- `API_UP_ROOT`: Base URL for sending generated descriptions
+- `MODEL`: LLM model to use (default: llama3.1:8b)
+- `LANGUAGE`: Content generation language (default: en)
+- `COMPANY_NAME`: Your company name for contextual generation
+- `SQLITE_DB_PATH`: Local database path (default: ./db.sqlite)
 
 ## Usage
 
