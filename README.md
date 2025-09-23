@@ -112,6 +112,12 @@ Samuele Mancuso - [@AllWorkNoPlay-95](https://github.com/AllWorkNoPlay-95)
 
 Project Link: [https://github.com/AllWorkNoPlay-95/KeywordSmith-AI](https://github.com/AllWorkNoPlay-95/KeywordSmith-AI)
 
+## Production Use
+
+KeywordSmith AI is actively used in production by [KartoClick](https://kartoclick.it), demonstrating its reliability and
+effectiveness in
+real-world e-commerce applications.
+
 ---
 
 </> with <3 by [AllWorkNoPlay-95](https://github.com/AllWorkNoPlay-95)
