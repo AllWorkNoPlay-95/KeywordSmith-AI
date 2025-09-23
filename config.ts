@@ -6,6 +6,7 @@ import CATEGORY_PROMPT from "./tuning/category.js";
 dotenv.config();
 
 export const TOKEN = process.env.API_TOKEN || "";
+
 const API_DOWN_ROOT = process.env.API_DOWN_ROOT;
 const API_CATEGORIES_DOWN_URL = API_DOWN_ROOT + process.env.API_CATEGORIES_DOWN_URL;
 const API_PRODUCTS_DOWN_URL = API_DOWN_ROOT + process.env.API_PRODUCTS_DOWN_URL;
@@ -13,6 +14,8 @@ const API_PRODUCTS_DOWN_URL = API_DOWN_ROOT + process.env.API_PRODUCTS_DOWN_URL;
 const API_UP_ROOT = process.env.API_UP_ROOT || API_DOWN_ROOT;
 const API_CATEGORIES_UP_URL = API_UP_ROOT + process.env.API_CATEGORIES_UP_URL || API_CATEGORIES_DOWN_URL;
 const API_PRODUCTS_UP_URL = API_UP_ROOT + process.env.API_PRODUCTS_UP_URL || API_PRODUCTS_DOWN_URL;
+
+const API_TEST_URL = process.env.API_TEST_URL || API_PRODUCTS_DOWN_URL;
 
 const CATEGORIES_TARGET_KEY = process.env.CATEGORIES_TARGET_KEY || "name";
 const PRODUCTS_TARGET_KEY = process.env.PRODUCTS_TARGET_KEY || "name";
