@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import {SQLITE_DB_PATH} from "../config";
+import {SQLITE_DB_PATH} from "../../config";
 import {Payload} from "../types/Payload";
 
 export function connectSqLite() {

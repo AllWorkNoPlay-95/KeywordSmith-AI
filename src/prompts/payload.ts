@@ -2,8 +2,8 @@ import {prompt} from "../interfaces/ollama";
 import {writeToDb} from "../interfaces/sqlite";
 import {cleanOutput} from "../helpers/cleanOutput";
 import {Payload} from "../types/Payload";
-import {PAYLOAD_CONFIGS} from "../config";
-import {SYSTEM_PROMPT} from "./system";
+import {PAYLOAD_CONFIGS} from "../../config";
+import SYSTEM_PROMPT from "../../tuning/system.js";
 
 export async function generatePayloadOutput(p: Payload) {
     const thisConfig = PAYLOAD_CONFIGS.find(c => c.type === p.type);

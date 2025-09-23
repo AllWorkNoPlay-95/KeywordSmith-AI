@@ -1,5 +1,5 @@
 import ollama from 'ollama';
-import {MODEL} from "../config";
+import {MODEL} from "../../config";
 
 export async function test() {
     const response = await ollama.chat({

@@ -1,5 +1,5 @@
 import fs from "fs";
-import {SQLITE_DB_PATH} from "../config";
+import {SQLITE_DB_PATH} from "../../config";
 import {logError, logWarn} from "../cli/styles";
 
 try {

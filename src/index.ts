@@ -1,7 +1,7 @@
 import {getAllIdsDb} from "./interfaces/sqlite";
 import {logOk} from "./cli/styles";
 import {fetchSource} from "./fetch/sourceData";
-import {PAYLOAD_CONFIGS} from "./config";
+import {PAYLOAD_CONFIGS} from "../config";
 import {generatePayloadOutput} from "./prompts/payload";
 import args from "node-args";
 

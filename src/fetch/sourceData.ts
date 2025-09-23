@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {PAYLOAD_CONFIGS, TOKEN} from "../config";
+import {PAYLOAD_CONFIGS, TOKEN} from "../../config";
 import {Payload} from "../types/Payload";
 
 type Result = { type: Payload["type"], data: Payload[] };
