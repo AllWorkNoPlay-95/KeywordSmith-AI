@@ -23,15 +23,15 @@ export function writeToDb(pay: Payload) {
     if (pay.output.length === 0) return;
     const db = connectSqLite();
     const stmt = db.prepare(`
-        INSERT INTO ai_descriptions (id, name, output)
-        VALUES (?, ?, ?)
+        INSERT INTO ai_descriptions (id, name, output, type)
+        VALUES (?, ?, ?, ?)
         ON CONFLICT
-            (id)
+            (id, type)
         DO UPDATE SET
             name = excluded.name,
             output = excluded.output
     `);
-    stmt.run(pay.id, pay.name, pay.output);
+    stmt.run(pay.id, pay.name, pay.output, pay.type);
 }
 
 export function readFromDb(id: number, type: Payload["type"]): Payload {
