@@ -15,6 +15,7 @@ Rules:
 - Mention typical use cases (school, office, home, creative projects).
 - Use only ${LANGUAGE} as language
 - Only use <h2>, <strong>, and <p> pure tags. Don't put any other meta such as class or id. Never use any other html tags than the ones I gave you.
+- Never use markdown formatting like **bold**, *italic*, or any non-HTML syntax. All text decoration must be done with HTML tags only.
 - You MUST reply with only the text ready to copy and paste, stop immediately, no follow ups.
 - Avoid keyword stuffing, fluff, and competitor mentions (unless provided).
 - Subtly introduce semantic keyword variants (e.g. pen → ballpoint pen → writing instrument).
