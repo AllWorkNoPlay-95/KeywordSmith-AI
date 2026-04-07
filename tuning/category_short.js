@@ -6,6 +6,7 @@ Constraints:
 - Length: 40–60 words.
 - Do NOT include any heading tags (<h2>).
 - Write a single <p> that briefly describes the category, its key appeal, and naturally includes semantic keyword variants of the category name.
+- Use <strong> to highlight the most important keywords naturally.
 - Tone: informative and inviting, never salesy.
 
 The Category is: `
