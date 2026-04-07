@@ -14,13 +14,16 @@ export function connectSqLite() {
                     ean             TEXT,
                     cod_produttore  TEXT,
                     brand           TEXT,
-                    full_desc      TEXT
+                    full_desc      TEXT,
+                    model          TEXT,
+                    created_at     TEXT DEFAULT (datetime('now')),
+                    updated_at     TEXT DEFAULT (datetime('now'))
                 );
     `).run();
 
     // Add columns if migrating from old schema
     const cols = (db.pragma('table_info(ai_descriptions)') as any[]).map((c: any) => c.name);
-    for (const col of ['ean', 'cod_produttore', 'brand', 'full_desc']) {
+    for (const col of ['ean', 'cod_produttore', 'brand', 'full_desc', 'model', 'created_at', 'updated_at']) {
         if (!cols.includes(col)) {
             db.prepare(`ALTER TABLE ai_descriptions ADD COLUMN ${col} TEXT`).run();
         }
@@ -35,8 +38,8 @@ export function writeToDb(pay: Payload) {
     if (pay.output.length === 0) return;
     const db = connectSqLite();
     const stmt = db.prepare(`
-        INSERT INTO ai_descriptions (id, name, output, type, ean, cod_produttore, brand, full_desc)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO ai_descriptions (id, name, output, type, ean, cod_produttore, brand, full_desc, model)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT
             (id, type)
         DO UPDATE SET
@@ -45,9 +48,11 @@ export function writeToDb(pay: Payload) {
             ean = excluded.ean,
             cod_produttore = excluded.cod_produttore,
             brand = excluded.brand,
-            full_desc = excluded.full_desc
+            full_desc = excluded.full_desc,
+            model = excluded.model,
+            updated_at = datetime('now')
     `);
-    stmt.run(pay.id, pay.name, pay.output, pay.type, pay.ean ?? null, pay.cod_produttore ?? null, pay.brand ?? null, pay.full_desc ?? null);
+    stmt.run(pay.id, pay.name, pay.output, pay.type, pay.ean ?? null, pay.cod_produttore ?? null, pay.brand ?? null, pay.full_desc ?? null, pay.model ?? null);
 }
 
 export function readFromDb(id: number, type: Payload["type"]): Payload {

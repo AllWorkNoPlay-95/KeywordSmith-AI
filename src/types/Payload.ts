@@ -9,4 +9,5 @@ export type Payload = {
     cod_produttore?: string;
     brand?: string;
     full_desc?: string;
+    model?: string;
 };
