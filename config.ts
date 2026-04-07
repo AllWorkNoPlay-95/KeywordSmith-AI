@@ -2,6 +2,7 @@ import * as dotenv from "dotenv"
 import {PayloadType} from "./src/types/Payload";
 import PRODUCT_PROMPT from "./tuning/product.js";
 import CATEGORY_PROMPT from "./tuning/category.js";
+import SHORT_CATEGORY_PROMPT from "./tuning/category_short.js";
 
 dotenv.config();
 
@@ -38,5 +39,12 @@ export const PAYLOAD_CONFIGS = [
         down: API_CATEGORIES_DOWN_URL,
         targetKey: CATEGORIES_TARGET_KEY,
         promptAfterSystem: CATEGORY_PROMPT
+    },
+    {
+        type: "category_short" as PayloadType,
+        up: API_CATEGORIES_UP_URL,
+        down: API_CATEGORIES_DOWN_URL,
+        targetKey: CATEGORIES_TARGET_KEY,
+        promptAfterSystem: SHORT_CATEGORY_PROMPT
     }
 ];

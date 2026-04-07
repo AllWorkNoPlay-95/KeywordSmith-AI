@@ -1,4 +1,4 @@
-export type PayloadType = "category" | "product";
+export type PayloadType = "category" | "product" | "category_short";
 
 export type Payload = {
     id: number;

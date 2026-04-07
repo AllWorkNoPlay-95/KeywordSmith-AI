@@ -2,7 +2,7 @@ const CATEGORY_PROMPT = `
 Write a single SEO-optimized category description following the system instructions.
 
 Constraints:
-- Length: 250–300 words.
+- Length: around 320 words.
 - Begin with an <h2> tag containing the exact category name provided below.
 - Structure the text with:
   1. <p> An engaging introduction that defines the category and its relevance to the reader. </p>

@@ -8,6 +8,7 @@
     "start": "ts-node src/index.ts",
     "products": "ts-node src/index.ts --only=product",
     "categories": "ts-node src/index.ts --only=category",
+    "categoriesShort": "ts-node src/index.ts --only=category_short",
     "sendCategories": "ts-node src/bin/sendCategories.ts",
     "sendProducts": "ts-node src/bin/sendProducts.ts",
     "nuke": "ts-node src/bin/nuke.ts ",
