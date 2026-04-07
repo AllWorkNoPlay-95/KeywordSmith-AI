@@ -7,9 +7,16 @@ import SYSTEM_PROMPT from "../../tuning/system.js";
 
 export async function generatePayloadOutput(p: Payload): Promise<Payload> {
     const thisConfig = PAYLOAD_CONFIGS.find(c => c.type === p.type);
+    let userPrompt = thisConfig.promptAfterSystem + p.name;
+    if (p.type === "product") {
+        if (p.brand) userPrompt += `\nBrand: ${p.brand}`;
+        if (p.cod_produttore) userPrompt += `\nManufacturer code: ${p.cod_produttore}`;
+        if (p.ean) userPrompt += `\nEAN: ${p.ean}`;
+        if (p.full_desc) userPrompt += `\nProduct metadata: ${p.full_desc}`;
+    }
     let result = await prompt(
         SYSTEM_PROMPT,
-        thisConfig.promptAfterSystem + p.name,
+        userPrompt,
     );
 
     result = cleanOutput(result);

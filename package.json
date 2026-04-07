@@ -11,6 +11,7 @@
     "sendCategories": "ts-node src/bin/sendCategories.ts",
     "sendProducts": "ts-node src/bin/sendProducts.ts",
     "nuke": "ts-node src/bin/nuke.ts ",
+    "preview": "ts-node src/bin/preview.ts",
     "test": "jest"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "better-sqlite3": "^12.2.0",
     "chalk": "^5.6.2",
     "dotenv": "^17.2.2",
+    "duck-duck-scrape": "^2.2.7",
     "node-args": "^2.1.8",
     "ollama": "^0.5.18"
   }

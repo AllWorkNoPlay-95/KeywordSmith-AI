@@ -10,12 +10,19 @@ export async function fetchSource(filter: Payload["type"][] | false = false) {
         if (filter && !filter.includes(pay.type)) continue;
         const {data} = await axios.get(pay.down + "?token=" + TOKEN);
         for (const d of data) {
-            resultArray.push({
+            const payload: Payload = {
                 id: d.id,
-                name: d[pay.targetKey],
+                name: pay.type === "product" ? (d.short_desc || d[pay.targetKey]) : d[pay.targetKey],
                 output: "",
                 type: pay.type
-            } as Payload)
+            };
+            if (pay.type === "product") {
+                payload.ean = d.ean || undefined;
+                payload.cod_produttore = d.cod_produttore || undefined;
+                payload.brand = d.brand || undefined;
+                payload.full_desc = d[pay.targetKey] || undefined;
+            }
+            resultArray.push(payload);
         }
     }
     return resultArray;

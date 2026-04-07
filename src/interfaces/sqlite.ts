@@ -6,13 +6,25 @@ export function connectSqLite() {
     const db = new Database(SQLITE_DB_PATH);
     db.prepare(`CREATE TABLE IF NOT EXISTS ai_descriptions
                 (
-                    pk     INTEGER PRIMARY KEY,
-                    id     INTEGER,
-                    name   TEXT,
-                    output TEXT,
-                    type   VARCHAR(255) NOT NULL
+                    pk         INTEGER PRIMARY KEY,
+                    id         INTEGER,
+                    name       TEXT,
+                    output     TEXT,
+                    type       VARCHAR(255) NOT NULL,
+                    ean             TEXT,
+                    cod_produttore  TEXT,
+                    brand           TEXT,
+                    full_desc      TEXT
                 );
     `).run();
+
+    // Add columns if migrating from old schema
+    const cols = (db.pragma('table_info(ai_descriptions)') as any[]).map((c: any) => c.name);
+    for (const col of ['ean', 'cod_produttore', 'brand', 'full_desc']) {
+        if (!cols.includes(col)) {
+            db.prepare(`ALTER TABLE ai_descriptions ADD COLUMN ${col} TEXT`).run();
+        }
+    }
 
     db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS control
         ON ai_descriptions (id, type);`).run();
@@ -23,15 +35,19 @@ export function writeToDb(pay: Payload) {
     if (pay.output.length === 0) return;
     const db = connectSqLite();
     const stmt = db.prepare(`
-        INSERT INTO ai_descriptions (id, name, output, type)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO ai_descriptions (id, name, output, type, ean, cod_produttore, brand, full_desc)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT
             (id, type)
         DO UPDATE SET
             name = excluded.name,
-            output = excluded.output
+            output = excluded.output,
+            ean = excluded.ean,
+            cod_produttore = excluded.cod_produttore,
+            brand = excluded.brand,
+            full_desc = excluded.full_desc
     `);
-    stmt.run(pay.id, pay.name, pay.output, pay.type);
+    stmt.run(pay.id, pay.name, pay.output, pay.type, pay.ean ?? null, pay.cod_produttore ?? null, pay.brand ?? null, pay.full_desc ?? null);
 }
 
 export function readFromDb(id: number, type: Payload["type"]): Payload {

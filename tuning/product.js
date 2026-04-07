@@ -1,5 +1,6 @@
 const PRODUCT_PROMPT = `
-Write a single SEO-optimized product description for this name following the system instructions.  
+Write a single SEO-optimized product description for this product following the system instructions.
+You will receive the product name, and optionally its brand, EAN code, and a short description. Use all available information to write a richer, more accurate description.
 
 Constraints:
 - Length: 180–220 words.
