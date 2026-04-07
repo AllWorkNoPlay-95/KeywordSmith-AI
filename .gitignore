@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 /package-lock.json
 /.idea/misc.xml
 /db.sqlite
+.DS_Store
