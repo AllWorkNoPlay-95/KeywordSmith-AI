@@ -1,5 +1,5 @@
 import ollama from 'ollama';
-import {MODEL} from "../../config";
+import {MODEL, THINK} from "../../config";
 
 export async function test() {
     const response = await ollama.chat({
@@ -30,7 +30,8 @@ export async function prompt(sys: string, p: string) {
                 role: 'user',
                 content: p
             }
-        ]
+        ],
+        think: THINK,
     });
 
     if (response.message.content) {

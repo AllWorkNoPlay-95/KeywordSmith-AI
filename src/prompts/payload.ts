@@ -2,7 +2,7 @@ import {prompt} from "../interfaces/ollama";
 import {writeToDb} from "../interfaces/sqlite";
 import {cleanOutput} from "../helpers/cleanOutput";
 import {Payload} from "../types/Payload";
-import {MODEL, PAYLOAD_CONFIGS} from "../../config";
+import {MODEL, PAYLOAD_CONFIGS, THINK} from "../../config";
 import SYSTEM_PROMPT from "../../tuning/system.js";
 
 export async function generatePayloadOutput(p: Payload): Promise<Payload> {
@@ -23,6 +23,7 @@ export async function generatePayloadOutput(p: Payload): Promise<Payload> {
 
     p.output = result;
     p.model = MODEL;
+    p.think = THINK;
     writeToDb(p);
     return p;
 }

@@ -24,6 +24,7 @@ export const LANGUAGE = process.env.LANGUAGE || "en";
 export const MODEL = process.env.MODEL || "gemma4:26b"; //Reccomended: gemma4:26b | llama3.1:8b | mixtral:8x22b (RAM/GPU hungry) | mixtral:8x7b (RAM hungry) | qwen2.5:7b (Unstable, occasional hallucinations with cinese chars)
 export const COMPANY_NAME = process.env.COMPANY_NAME;
 export const SQLITE_DB_PATH = process.env.SQLITE_DB_PATH || "./db.sqlite";
+export const THINK = (process.env.THINK || "false").toLowerCase() === "true";
 
 export const PAYLOAD_CONFIGS = [
     {

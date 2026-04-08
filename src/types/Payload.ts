@@ -10,4 +10,5 @@ export type Payload = {
     brand?: string;
     full_desc?: string;
     model?: string;
+    think?: boolean;
 };

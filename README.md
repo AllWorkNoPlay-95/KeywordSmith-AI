@@ -66,6 +66,7 @@ Edit the `.env` file to configure the following parameters:
 | `MODEL` | Ollama model to use | `gemma4:26b` |
 | `LANGUAGE` | Content generation language | `en` |
 | `COMPANY_NAME` | Your company name for contextual generation | — |
+| `THINK` | Enable LLM thinking/reasoning mode | `false` |
 | `SQLITE_DB_PATH` | Local database path | `./db.sqlite` |
 
 ## Usage
@@ -106,6 +107,7 @@ npm run dev -- --upload=after
 ### Utility Commands
 
 ```bash
+npm run prompts          # Print all resolved prompts and current model/settings
 npm run nuke             # Delete the local SQLite database
 npm test                 # Run Jest tests
 ```
@@ -166,6 +168,7 @@ Single table `ai_descriptions` with automatic schema migration for older databas
 | `brand` | TEXT | Product brand |
 | `full_desc` | TEXT | Original full description from API |
 | `model` | TEXT | LLM model used for generation |
+| `think` | INTEGER | Whether thinking/reasoning mode was enabled (0/1) |
 | `created_at` | TEXT | Row creation timestamp |
 | `updated_at` | TEXT | Last update timestamp |
 
