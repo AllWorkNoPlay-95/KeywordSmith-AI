@@ -13,6 +13,7 @@
     "sendProducts": "ts-node src/bin/sendProducts.ts",
     "nuke": "ts-node src/bin/nuke.ts ",
     "preview": "ts-node src/bin/preview.ts",
+    "prompts": "ts-node src/bin/showPrompts.ts",
     "test": "jest"
   },
   "repository": {
