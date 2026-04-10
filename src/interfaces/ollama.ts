@@ -42,7 +42,7 @@ export async function prompt(sys: string, p: string) {
                         content: p
                     }
                 ],
-                think: THINK,
+                ...(THINK && {think: true}),
             });
 
             if (response.message.content) {

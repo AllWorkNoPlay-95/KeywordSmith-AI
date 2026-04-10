@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import {prompt} from "../interfaces/ollama";
 import {writeToDb} from "../interfaces/sqlite";
 import {cleanOutput} from "../helpers/cleanOutput";
@@ -14,6 +15,9 @@ export async function generatePayloadOutput(p: Payload): Promise<Payload> {
         if (p.ean) userPrompt += `\nEAN: ${p.ean}`;
         if (p.full_desc) userPrompt += `\nProduct metadata: ${p.full_desc}`;
     }
+    console.log(chalk.dim(`  System: ${SYSTEM_PROMPT.replaceAll("\n", " ")}`));
+    console.log(chalk.dim(`  Prompt: ${userPrompt.replaceAll("\n", " ")}`));
+    console.log(chalk.dim(`  Thinking: ${THINK ? "on" : "off"}`));
     let result = await prompt(
         SYSTEM_PROMPT,
         userPrompt,
