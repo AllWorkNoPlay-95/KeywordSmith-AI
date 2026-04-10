@@ -18,10 +18,17 @@ export async function generatePayloadOutput(p: Payload): Promise<Payload> {
     console.log(chalk.dim(`  System: ${SYSTEM_PROMPT.replaceAll("\n", " ")}`));
     console.log(chalk.dim(`  Prompt: ${userPrompt.replaceAll("\n", " ")}`));
     console.log(chalk.dim(`  Thinking: ${THINK ? "on" : "off"}`));
+    const start = Date.now();
     let result = await prompt(
         SYSTEM_PROMPT,
         userPrompt,
     );
+    const elapsed = Date.now() - start;
+    const formatted = elapsed < 1000 ? `${elapsed}ms`
+        : elapsed < 60_000 ? `${(elapsed / 1000).toFixed(1)}s`
+        : elapsed < 3_600_000 ? `${(elapsed / 60_000).toFixed(1)}min`
+        : `${(elapsed / 3_600_000).toFixed(1)}h`;
+    console.log(chalk.dim(`  Done in ${formatted}`));
 
     result = cleanOutput(result);
 

@@ -5,6 +5,10 @@ import {logWarn} from "../cli/styles";
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 2000;
 
+function thinkOption(): boolean | undefined {
+    return THINK ? true : undefined;
+}
+
 async function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -42,7 +46,7 @@ export async function prompt(sys: string, p: string) {
                         content: p
                     }
                 ],
-                ...(THINK && {think: true}),
+                think: thinkOption(),
             });
 
             if (response.message.content) {
