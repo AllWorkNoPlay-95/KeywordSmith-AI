@@ -6,7 +6,23 @@ import {Payload} from "../types/Payload";
 import {MODEL, PAYLOAD_CONFIGS, THINK} from "../../config";
 import SYSTEM_PROMPT from "../../tuning/system.js";
 
-export async function generatePayloadOutput(p: Payload): Promise<Payload> {
+const recentTimes: number[] = [];
+const MAX_HISTORY = 10;
+
+function formatDuration(ms: number): string {
+    if (ms < 1000) return `${ms}ms`;
+    if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
+    if (ms < 3_600_000) return `${(ms / 60_000).toFixed(1)}min`;
+    return `${(ms / 3_600_000).toFixed(1)}h`;
+}
+
+function median(arr: number[]): number {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+export async function generatePayloadOutput(p: Payload, remaining?: number): Promise<Payload> {
     const thisConfig = PAYLOAD_CONFIGS.find(c => c.type === p.type);
     let userPrompt = thisConfig.promptAfterSystem + p.name;
     if (p.type === "product") {
@@ -24,11 +40,15 @@ export async function generatePayloadOutput(p: Payload): Promise<Payload> {
         userPrompt,
     );
     const elapsed = Date.now() - start;
-    const formatted = elapsed < 1000 ? `${elapsed}ms`
-        : elapsed < 60_000 ? `${(elapsed / 1000).toFixed(1)}s`
-        : elapsed < 3_600_000 ? `${(elapsed / 60_000).toFixed(1)}min`
-        : `${(elapsed / 3_600_000).toFixed(1)}h`;
-    console.log(chalk.dim(`  Done in ${formatted}`));
+    recentTimes.push(elapsed);
+    if (recentTimes.length > MAX_HISTORY) recentTimes.shift();
+
+    let doneMsg = `  Done in ${formatDuration(elapsed)}`;
+    if (remaining != null && remaining > 0 && recentTimes.length > 0) {
+        const eta = median(recentTimes) * remaining;
+        doneMsg += ` — ETA ${formatDuration(eta)}`;
+    }
+    console.log(chalk.dim(doneMsg));
 
     result = cleanOutput(result);
 

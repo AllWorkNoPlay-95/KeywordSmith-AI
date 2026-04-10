@@ -33,8 +33,10 @@ async function main(): Promise<void> {
         for (const payloadIndex in thisPayload) {
             const thisPayloadItem = thisPayload[payloadIndex];
             if (thisPayloadIds.includes(parseInt(String(thisPayloadItem.id)))) continue;
-            logInfo(`Processing ${conf.type} ${parseInt(payloadIndex) + 1}/${thisPayload.length} (${((parseInt(payloadIndex) + 1) / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
-            let completeP = await generatePayloadOutput(thisPayloadItem);
+            const current = parseInt(payloadIndex) + 1;
+            const remaining = thisPayload.length - current;
+            logInfo(`Processing ${conf.type} ${current}/${thisPayload.length} (${(current / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
+            let completeP = await generatePayloadOutput(thisPayloadItem, remaining);
             if (args["upload"] === "during") {
                 logInfo(`Uploading ${conf.type} ${completeP.id}: ${completeP.name}`);
                 await sendGeneratedDescriptions(completeP);
