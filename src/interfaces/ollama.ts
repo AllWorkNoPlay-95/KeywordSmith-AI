@@ -1,13 +1,10 @@
 import ollama from 'ollama';
 import {MODEL, THINK} from "../../config";
 import {logWarn} from "../cli/styles";
+import {sleep} from "../helpers/sleep";
 
 const MAX_RETRIES = 3;
 const BASE_BACKOFF_MS = 2000;
-
-async function sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 export async function test() {
     const response = await ollama.chat({
