@@ -9,8 +9,11 @@ export async function sendGeneratedDescriptions(pay: Payload): Promise<void> {
             id: pay.id,
             description: pay.output
         };
-        await axios.post(PAYLOAD_CONFIGS.find(
-            p => p.type === pay.type).up, data);
+        const config = PAYLOAD_CONFIGS.find(p => p.type === pay.type);
+        if (!config) {
+            throw new Error(`No config found for payload type: ${pay.type}`);
+        }
+        await axios.post(config.up, data);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error(`Failed to send ${pay.type}: ${error.message}`);
