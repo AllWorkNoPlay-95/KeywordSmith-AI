@@ -14,6 +14,7 @@
     "sendCategories": "ts-node src/bin/sendCategories.ts",
     "sendProducts": "ts-node src/bin/sendProducts.ts",
     "nuke": "ts-node src/bin/nuke.ts ",
+    "migrate": "ts-node src/bin/migrate.ts",
     "preview": "ts-node src/bin/preview.ts",
     "prompts": "ts-node src/bin/showPrompts.ts",
     "test": "jest"
