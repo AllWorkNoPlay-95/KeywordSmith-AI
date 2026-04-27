@@ -1,4 +1,4 @@
-import {dumpDb, getAllIdsDb} from "./interfaces/sqlite";
+import {dumpDb, readFromDb} from "./interfaces/sqlite";
 import {logInfo, logOk, logWarn} from "./cli/styles";
 import {fetchSource} from "./fetch/sourceData";
 import {PAYLOAD_CONFIGS} from "../config";
@@ -29,10 +29,19 @@ async function main(): Promise<void> {
     if (filter.length > 0) eligible_configs = eligible_configs.filter(c => filter.includes(c.type));
     for (const conf of eligible_configs) {
         const thisPayload = await fetchSource([conf.type]);
-        const thisPayloadIds = getAllIdsDb(conf.type);
+        const norm = (v: string | null | undefined) => (v ?? "").toString();
         for (const payloadIndex in thisPayload) {
             const thisPayloadItem = thisPayload[payloadIndex];
-            if (thisPayloadIds.includes(parseInt(String(thisPayloadItem.id)))) continue;
+            const itemId = parseInt(String(thisPayloadItem.id));
+            const prior = readFromDb(itemId, conf.type);
+            if (
+                prior
+                && prior.name === thisPayloadItem.name
+                && norm(prior.full_desc) === norm(thisPayloadItem.full_desc)
+            ) {
+                logInfo(`Skipping unchanged ${conf.type} ${itemId}: ${thisPayloadItem.name}`);
+                continue;
+            }
             const current = parseInt(payloadIndex) + 1;
             const remaining = thisPayload.length - current;
             logInfo(`Processing ${conf.type} ${current}/${thisPayload.length} (${(current / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
