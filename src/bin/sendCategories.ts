@@ -1,14 +1,13 @@
 import {logInfo, logOk} from "../cli/styles";
-import {getAllIdsDb, readFromDb} from "../interfaces/sqlite";
-import {Payload} from "../types/Payload";
+import {getUnsentDb, markSentDb} from "../interfaces/sqlite";
 import {sendGeneratedDescriptions} from "../send/generatedDescriptions";
 
 (async () => {
-    const ids = getAllIdsDb("category");
-    const total = ids.length;
+    const items = getUnsentDb("category");
+    const total = items.length;
     const startTime = Date.now();
     for (let i = 0; i < total; i++) {
-        const tc = readFromDb(parseInt(String(ids[i])), "category") as Payload;
+        const tc = items[i];
         const current = i + 1;
         const elapsed = Date.now() - startTime;
         const avgMs = current > 1 ? elapsed / i : 0;
@@ -16,6 +15,7 @@ import {sendGeneratedDescriptions} from "../send/generatedDescriptions";
         const eta = remaining > 0 ? `ETA: ${remaining}s` : "";
         logInfo(`Sending category ${current}/${total} (${(current / total * 100).toFixed(1)}%): ${tc.name} ${eta}`);
         await sendGeneratedDescriptions(tc);
+        markSentDb(tc.id, "category");
         logOk(`${tc.name} sent!`);
     }
 })().then(() => logOk("Categories sent!"));

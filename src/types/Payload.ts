@@ -11,4 +11,5 @@ export type Payload = {
     full_desc?: string;
     model?: string;
     think?: boolean;
+    sent_at?: string | null;
 };

@@ -1,4 +1,4 @@
-import {dumpDb, readFromDb} from "./interfaces/sqlite";
+import {getUnsentDb, markSentDb, readFromDb} from "./interfaces/sqlite";
 import {logInfo, logOk, logWarn} from "./cli/styles";
 import {fetchSource} from "./fetch/sourceData";
 import {PAYLOAD_CONFIGS} from "../config";
@@ -49,17 +49,19 @@ async function main(): Promise<void> {
             if (args["upload"] === "during") {
                 logInfo(`Uploading ${conf.type} ${completeP.id}: ${completeP.name}`);
                 await sendGeneratedDescriptions(completeP);
+                markSentDb(completeP.id, conf.type);
             }
         }
     }
 
     if (args["upload"] === "after") {
         for (const conf of eligible_configs) {
-            logInfo(`Dumping ${conf.type} DB and uploading Everything, Everywhere, All at once...`); // EE
-            const dump = dumpDb(conf.type);
-            logOk(`Dumped ${dump.length} ${conf.type} payloads`);
+            logInfo(`Dumping unsent ${conf.type} rows and uploading Everything, Everywhere, All at once...`); // EE
+            const dump = getUnsentDb(conf.type);
+            logOk(`Dumped ${dump.length} unsent ${conf.type} payloads`);
             for (const d of dump) {
                 await sendGeneratedDescriptions(d);
+                markSentDb(d.id, conf.type);
             }
         }
     }

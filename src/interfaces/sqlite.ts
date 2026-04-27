@@ -18,13 +18,14 @@ export function connectSqLite() {
                     model          TEXT,
                     think          INTEGER DEFAULT 0,
                     created_at     TEXT DEFAULT (datetime('now')),
-                    updated_at     TEXT DEFAULT (datetime('now'))
+                    updated_at     TEXT DEFAULT (datetime('now')),
+                    sent_at        TEXT
                 );
     `).run();
 
     // Add columns if migrating from old schema
     const cols = (db.pragma('table_info(ai_descriptions)') as any[]).map((c: any) => c.name);
-    for (const col of ['ean', 'cod_produttore', 'brand', 'full_desc', 'model', 'think', 'created_at', 'updated_at']) {
+    for (const col of ['ean', 'cod_produttore', 'brand', 'full_desc', 'model', 'think', 'created_at', 'updated_at', 'sent_at']) {
         if (!cols.includes(col)) {
             db.prepare(`ALTER TABLE ai_descriptions ADD COLUMN ${col} TEXT`).run();
         }
@@ -52,7 +53,8 @@ export function writeToDb(pay: Payload) {
             full_desc = excluded.full_desc,
             model = excluded.model,
             think = excluded.think,
-            updated_at = datetime('now')
+            updated_at = datetime('now'),
+            sent_at = NULL
     `);
     stmt.run(pay.id, pay.name, pay.output, pay.type, pay.ean ?? null, pay.cod_produttore ?? null, pay.brand ?? null, pay.full_desc ?? null, pay.model ?? null, pay.think ? 1 : 0);
 }
@@ -87,4 +89,27 @@ export function dumpDb(type: Payload["type"]): Payload[] {
         WHERE type = ?
     `);
     return stmt.all(type) as Payload[];
+}
+
+export function getUnsentDb(type: Payload["type"]): Payload[] {
+    const db = connectSqLite();
+    const stmt = db.prepare(`
+        SELECT id, name, output, type, sent_at
+        FROM ai_descriptions
+        WHERE type = ?
+          AND sent_at IS NULL
+          AND output IS NOT NULL
+          AND output != ''
+    `);
+    return stmt.all(type) as Payload[];
+}
+
+export function markSentDb(id: number, type: Payload["type"]): void {
+    const db = connectSqLite();
+    db.prepare(`
+        UPDATE ai_descriptions
+        SET sent_at = datetime('now')
+        WHERE id = ?
+          AND type = ?
+    `).run(id, type);
 }
