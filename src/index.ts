@@ -30,21 +30,31 @@ async function main(): Promise<void> {
     for (const conf of eligible_configs) {
         const thisPayload = await fetchSource([conf.type]);
         const norm = (v: string | null | undefined) => (v ?? "").toString();
-        for (const payloadIndex in thisPayload) {
-            const thisPayloadItem = thisPayload[payloadIndex];
-            const itemId = parseInt(String(thisPayloadItem.id));
+
+        // Filter out unchanged items BEFORE generation so totals and ETA are accurate
+        const toGenerate: typeof thisPayload = [];
+        let skipped = 0;
+        for (const item of thisPayload) {
+            const itemId = parseInt(String(item.id));
             const prior = readFromDb(itemId, conf.type);
             if (
                 prior
-                && prior.name === thisPayloadItem.name
-                && norm(prior.full_desc) === norm(thisPayloadItem.full_desc)
+                && prior.name === item.name
+                && norm(prior.full_desc) === norm(item.full_desc)
             ) {
-                logInfo(`Skipping unchanged ${conf.type} ${itemId}: ${thisPayloadItem.name}`);
+                skipped++;
                 continue;
             }
-            const current = parseInt(payloadIndex) + 1;
-            const remaining = thisPayload.length - current;
-            logInfo(`Processing ${conf.type} ${current}/${thisPayload.length} (${(current / thisPayload.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
+            toGenerate.push(item);
+        }
+
+        logInfo(`${conf.type}: ${toGenerate.length} to generate, ${skipped} unchanged skipped (${thisPayload.length} total from API)`);
+
+        for (let i = 0; i < toGenerate.length; i++) {
+            const thisPayloadItem = toGenerate[i];
+            const current = i + 1;
+            const remaining = toGenerate.length - current;
+            logInfo(`Processing ${conf.type} ${current}/${toGenerate.length} (${(current / toGenerate.length * 100).toFixed(1)}%): ${thisPayloadItem.name}`);
             let completeP = await generatePayloadOutput(thisPayloadItem, remaining);
             if (args["upload"] === "during") {
                 logInfo(`Uploading ${conf.type} ${completeP.id}: ${completeP.name}`);

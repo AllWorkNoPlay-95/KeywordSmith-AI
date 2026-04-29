@@ -141,3 +141,5 @@ vite.config.ts.timestamp-*
 /.idea/misc.xml
 /db.sqlite
 .DS_Store
+db copia.sqlite
+.gitignore
