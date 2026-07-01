@@ -69,6 +69,7 @@ Edit the `.env` file to configure the following parameters:
 | `COMPANY_NAME` | Your company name for contextual generation | — |
 | `THINK` | Enable LLM thinking/reasoning mode | `false` |
 | `SQLITE_DB_PATH` | Local database path | `./db.sqlite` |
+| `OLLAMA_API_KEY` | Ollama API key, required for Ollama's web search capability | — |
 
 ## Usage
 
