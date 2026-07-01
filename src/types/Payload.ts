@@ -9,6 +9,7 @@ export type Payload = {
     cod_produttore?: string;
     brand?: string;
     full_desc?: string;
+    source_desc?: string;
     model?: string;
     think?: boolean;
     sent_at?: string | null;

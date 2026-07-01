@@ -14,6 +14,7 @@ import chalk from "chalk";
         logInfo(`Cod. prod.: ${p.cod_produttore ?? "—"}`);
         logInfo(`EAN:        ${p.ean ?? "—"}`);
         if (p.full_desc) logInfo(`Full desc:  ${p.full_desc.slice(0, 150)}${p.full_desc.length > 150 ? "…" : ""}`);
+        if (p.source_desc) logInfo(`Source desc: ${p.source_desc.slice(0, 150)}${p.source_desc.length > 150 ? "…" : ""}`);
         console.log();
 
         logWarn("Generating with LLM...");

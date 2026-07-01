@@ -13,7 +13,8 @@ Everything runs on your machine — no cloud, no data leaks.
 
 - **100% Local**: All processing stays on your machine via Ollama — no third-party cloud calls
 - **Multi-type Generation**: Supports product descriptions, category descriptions, and compact category summaries (`category_short`)
-- **SEO-optimized HTML Output**: Clean HTML using only `<h2>`, `<strong>`, and `<p>` tags — no classes or IDs
+- **SEO-optimized HTML Output**: Clean HTML using only `<h2>`, `<strong>`, `<p>`, `<ul>`, and `<li>` tags — no classes or IDs
+- **Technical Description Awareness**: Uses the supplier's sanitized source description (`source_desc`) as an authoritative technical reference, weaving real specs into the prose and optionally adding a bulleted technical characteristics section for technical products
 - **Flexible Pipeline**: Fetch -> Generate -> Store -> Upload, with CLI flags for fine-grained control
 - **Smart Deduplication**: Skips already-generated items using SQLite tracking with upsert-on-conflict
 - **Upload Modes**: Upload descriptions one-by-one during generation (`--upload=during`) or batch after (`--upload=after`)
@@ -167,6 +168,7 @@ Single table `ai_descriptions` with automatic schema migration for older databas
 | `cod_produttore` | TEXT | Manufacturer code |
 | `brand` | TEXT | Product brand |
 | `full_desc` | TEXT | Original full description from API |
+| `source_desc` | TEXT | Sanitized supplier technical description from API, used as an authoritative technical source in the prompt |
 | `model` | TEXT | LLM model used for generation |
 | `think` | INTEGER | Whether thinking/reasoning mode was enabled (0/1) |
 | `created_at` | TEXT | Row creation timestamp |

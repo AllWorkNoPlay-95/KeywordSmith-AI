@@ -41,6 +41,7 @@ async function main(): Promise<void> {
                 prior
                 && prior.name === item.name
                 && norm(prior.full_desc) === norm(item.full_desc)
+                && norm(prior.source_desc) === norm(item.source_desc)
             ) {
                 skipped++;
                 continue;

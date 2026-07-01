@@ -30,6 +30,7 @@ export async function generatePayloadOutput(p: Payload, remaining?: number): Pro
         if (p.cod_produttore) userPrompt += `\nManufacturer code: ${p.cod_produttore}`;
         if (p.ean) userPrompt += `\nEAN: ${p.ean}`;
         if (p.full_desc) userPrompt += `\nProduct metadata: ${p.full_desc}`;
+        if (p.source_desc) userPrompt += `\nSupplier technical description (authoritative source): ${p.source_desc}`;
     }
     console.log(chalk.dim(`  System: ${SYSTEM_PROMPT.replaceAll("\n", " ")}`));
     console.log(chalk.dim(`  Prompt: ${userPrompt.replaceAll("\n", " ")}`));

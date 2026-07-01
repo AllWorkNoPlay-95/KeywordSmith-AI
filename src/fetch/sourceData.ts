@@ -21,6 +21,7 @@ export async function fetchSource(filter: Payload["type"][] | false = false) {
                 payload.cod_produttore = d.cod_produttore || undefined;
                 payload.brand = d.brand || undefined;
                 payload.full_desc = d[pay.targetKey] || undefined;
+                payload.source_desc = d.source_desc || undefined;
             }
             resultArray.push(payload);
         }
