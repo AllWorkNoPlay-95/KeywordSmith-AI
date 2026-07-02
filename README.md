@@ -15,6 +15,7 @@ Everything runs on your machine — no cloud, no data leaks.
 - **Multi-type Generation**: Supports product descriptions, category descriptions, and compact category summaries (`category_short`)
 - **SEO-optimized HTML Output**: Clean HTML using only `<h2>`, `<strong>`, `<p>`, `<ul>`, and `<li>` tags — no classes or IDs
 - **Technical Description Awareness**: Uses the supplier's sanitized source description (`source_desc`) as an authoritative technical reference, weaving real specs into the prose and optionally adding a bulleted technical characteristics section for technical products
+- **Web Crawler Fallback** (opt-in): When a product has no supplier description, searches the web by EAN via Ollama Web Search, verifies the match (EAN / manufacturer code / brand), and caches a verified technical description in SQLite — so the same EAN is never searched twice
 - **Flexible Pipeline**: Fetch -> Generate -> Store -> Upload, with CLI flags for fine-grained control
 - **Smart Deduplication**: Skips already-generated items using SQLite tracking with upsert-on-conflict
 - **Upload Modes**: Upload descriptions one-by-one during generation (`--upload=during`) or batch after (`--upload=after`)
@@ -70,6 +71,8 @@ Edit the `.env` file to configure the following parameters:
 | `THINK` | Enable LLM thinking/reasoning mode | `false` |
 | `SQLITE_DB_PATH` | Local database path | `./db.sqlite` |
 | `OLLAMA_API_KEY` | Ollama API key, required for Ollama's web search capability | — |
+| `WEB_SEARCH` | Enable the web-crawler fallback inline during `npm run dev` (opt-in — see [Web Crawler](#web-crawler-fallback)) | `false` |
+| `WEB_SEARCH_MAX_RESULTS` | Max search results requested per EAN lookup | `5` |
 
 ## Usage
 
@@ -111,8 +114,26 @@ npm run dev -- --upload=after
 ```bash
 npm run prompts          # Print all resolved prompts and current model/settings
 npm run nuke             # Delete the local SQLite database
+npm run migrate          # Apply any pending SQLite schema migrations
 npm test                 # Run Jest tests
 ```
+
+### Web Crawler Fallback
+
+Many products don't have a supplier-provided technical description (`source_desc`). For those, KeywordSmith can
+search the web by EAN, verify the result actually matches the product (EAN / manufacturer code / brand
+corroboration), extract a technical description, and cache it in SQLite (`product_tech_sources`) so the same
+EAN is never searched twice. It's **opt-in** — it never runs during a plain `npm run dev`:
+
+```bash
+npm run webSearch                  # Backfill: search + cache for all eligible products, then exit
+npm run dev -- --web-search        # Search+cache inline, live, during the normal pipeline
+WEB_SEARCH=true npm run dev        # Same as --web-search, via .env
+```
+
+Requires an [Ollama API key](https://ollama.com/settings/keys) set as `OLLAMA_API_KEY` (Ollama's web search is a
+cloud capability, not local). Once a product's EAN is cached, subsequent `npm run dev` runs reuse the cached
+result at no extra cost — no flag needed.
 
 ## Architecture
 
@@ -137,17 +158,19 @@ KeywordSmith-AI/
 │   ├── product.js       # Product-specific user prompt
 │   ├── category.js      # Category-specific user prompt
 │   ├── category_short.js # Compact category summary prompt
+│   ├── webExtract.js    # Verification + extraction prompt for the web crawler
 │   └── exclude.js       # Words/phrases to exclude from output
 ├── src/
 │   ├── index.ts         # Main entry point & pipeline orchestrator
-│   ├── types/           # TypeScript type definitions (Payload, PayloadType)
+│   ├── types/           # TypeScript type definitions (Payload, PayloadType, TechCacheRow)
 │   ├── cli/             # Styled CLI logging (chalk-based)
 │   ├── fetch/           # API data retrieval
 │   ├── prompts/         # LLM prompt assembly & generation orchestration
-│   ├── interfaces/      # Ollama and SQLite wrappers
+│   ├── interfaces/      # Ollama, Ollama web search, and SQLite wrappers
+│   ├── crawl/           # EAN web-search crawler (search, verify, extract, cache)
 │   ├── helpers/         # Output cleaning (strips markdown fences from LLM output)
 │   ├── send/            # Upload generated descriptions to API
-│   ├── bin/             # Standalone scripts (sendCategories, sendProducts, nuke, preview)
+│   ├── bin/             # Standalone scripts (sendCategories, sendProducts, nuke, preview, webSearch)
 │   └── __tests__/       # Jest tests
 ├── .env                 # Environment variables (not in repo)
 ├── .env.example         # Template for .env
@@ -156,7 +179,9 @@ KeywordSmith-AI/
 
 ## SQLite Schema
 
-Single table `ai_descriptions` with automatic schema migration for older databases:
+### `ai_descriptions`
+
+Generated descriptions, with automatic schema migration for older databases:
 
 | Column | Type | Notes |
 |---|---|---|
@@ -170,12 +195,34 @@ Single table `ai_descriptions` with automatic schema migration for older databas
 | `brand` | TEXT | Product brand |
 | `full_desc` | TEXT | Original full description from API |
 | `source_desc` | TEXT | Sanitized supplier technical description from API, used as an authoritative technical source in the prompt |
+| `web_desc` | TEXT | Technical description found and verified by the [web crawler](#web-crawler-fallback), used only when `source_desc` is absent |
 | `model` | TEXT | LLM model used for generation |
 | `think` | INTEGER | Whether thinking/reasoning mode was enabled (0/1) |
 | `created_at` | TEXT | Row creation timestamp |
 | `updated_at` | TEXT | Last update timestamp |
 
 Unique index on `(id, type)` — upserts on conflict.
+
+### `product_tech_sources`
+
+Cache of web-crawler results, keyed by EAN, so a product is only searched for once (see
+[Web Crawler Fallback](#web-crawler-fallback)):
+
+| Column | Type | Notes |
+|---|---|---|
+| `pk` | INTEGER | Primary key |
+| `ean` | TEXT | Search key (unique) |
+| `product_id` | INTEGER | Product ID from API |
+| `name`, `cod_produttore`, `brand` | TEXT | Product identity snapshot at search time |
+| `description` | TEXT | Extracted technical description (`NULL` if no verified match) |
+| `source_url` | TEXT | URL the description was extracted from |
+| `status` | TEXT | `found` or `not_found` |
+| `confidence` | REAL | LLM-reported match confidence (0–1) |
+| `model` | TEXT | LLM model used for verification/extraction |
+| `created_at` / `updated_at` | TEXT | Timestamps |
+
+Unique index on `ean` — upserts on conflict. Negative results (`not_found`) are cached too, so unmatched
+products aren't re-searched on every run.
 
 ## How to Contribute
 

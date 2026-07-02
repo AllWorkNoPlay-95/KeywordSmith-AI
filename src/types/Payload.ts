@@ -10,6 +10,7 @@ export type Payload = {
     brand?: string;
     full_desc?: string;
     source_desc?: string;
+    web_desc?: string;
     model?: string;
     think?: boolean;
     sent_at?: string | null;

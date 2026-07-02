@@ -25,6 +25,9 @@ export const MODEL = process.env.MODEL || "gemma4:26b"; //Reccomended: gemma4:26
 export const COMPANY_NAME = process.env.COMPANY_NAME;
 export const SQLITE_DB_PATH = process.env.SQLITE_DB_PATH || "./db.sqlite";
 export const THINK = (process.env.THINK || "false").toLowerCase() === "true";
+export const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY || "";
+export const WEB_SEARCH = (process.env.WEB_SEARCH || "false").toLowerCase() === "true";
+export const WEB_SEARCH_MAX_RESULTS = parseInt(process.env.WEB_SEARCH_MAX_RESULTS || "5", 10);
 
 export const PAYLOAD_CONFIGS = [
     {

@@ -16,6 +16,7 @@
     "nuke": "ts-node src/bin/nuke.ts ",
     "migrate": "ts-node src/bin/migrate.ts",
     "preview": "ts-node src/bin/preview.ts",
+    "webSearch": "ts-node src/bin/webSearch.ts",
     "prompts": "ts-node src/bin/showPrompts.ts",
     "test": "jest"
   },
@@ -46,6 +47,6 @@
     "dotenv": "^17.2.2",
     "duck-duck-scrape": "^2.2.7",
     "node-args": "^2.1.8",
-    "ollama": "^0.5.18"
+    "ollama": "^0.6.3"
   }
 }

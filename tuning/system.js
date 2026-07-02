@@ -21,7 +21,7 @@ Rules:
 - Subtly introduce semantic keyword variants (e.g. pen → ballpoint pen → writing instrument).
 - Use <strong> to highlight the most important keywords naturally within the text.
 - The first H2 must contain the exact product or category name that the user provided. A second H2 is allowed only to introduce an optional technical specifications list, if instructed below.
-- Do not invent dimensions, materials, or physical details. You MAY include such technical details only when they are explicitly present in the provided supplier technical description or metadata.
+- Do not invent dimensions, materials, or physical details. You MAY include such technical details only when they are explicitly present in the provided technical description (supplier-provided or found online) or metadata.
 
 Do not use words from this list: ${excludes_str}.
 

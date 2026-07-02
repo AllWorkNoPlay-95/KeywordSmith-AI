@@ -1,10 +1,13 @@
-import {getUnsentDb, markSentDb, readFromDb} from "./interfaces/sqlite";
+import {getCachedTechDescription, getUnsentDb, markSentDb, readFromDb} from "./interfaces/sqlite";
 import {logInfo, logOk, logWarn} from "./cli/styles";
 import {fetchSource} from "./fetch/sourceData";
-import {PAYLOAD_CONFIGS} from "../config";
+import {PAYLOAD_CONFIGS, WEB_SEARCH} from "../config";
 import {generatePayloadOutput} from "./prompts/payload";
 import args from "node-args";
 import {sendGeneratedDescriptions} from "./send/generatedDescriptions";
+import {findTechnicalDescription} from "./crawl/technicalSource";
+
+const webSearchEnabled = WEB_SEARCH || args["web-search"] === true || args["web-search"] === "true";
 
 async function main(): Promise<void> {
     let filter: string[] = [];
@@ -31,6 +34,26 @@ async function main(): Promise<void> {
         const thisPayload = await fetchSource([conf.type]);
         const norm = (v: string | null | undefined) => (v ?? "").toString();
 
+        // For products still missing a supplier description, fill in a web-found one
+        // BEFORE the change-detection comparison below, so it can trigger regeneration.
+        // Reading the cache is always cheap and safe; the live crawl only runs opt-in
+        // (WEB_SEARCH=true or --web-search), since it costs a search + LLM call per EAN.
+        if (conf.type === "product") {
+            for (const item of thisPayload) {
+                if (!item.ean || item.source_desc) continue;
+                if (webSearchEnabled) {
+                    try {
+                        const row = await findTechnicalDescription(item);
+                        if (row?.status === "found" && row.description) item.web_desc = row.description;
+                    } catch (e: any) {
+                        logWarn(`Web crawl failed for EAN ${item.ean}: ${e.message ?? e}`);
+                    }
+                } else {
+                    item.web_desc = getCachedTechDescription(item.ean);
+                }
+            }
+        }
+
         // Filter out unchanged items BEFORE generation so totals and ETA are accurate
         const toGenerate: typeof thisPayload = [];
         let skipped = 0;
@@ -42,6 +65,7 @@ async function main(): Promise<void> {
                 && prior.name === item.name
                 && norm(prior.full_desc) === norm(item.full_desc)
                 && norm(prior.source_desc) === norm(item.source_desc)
+                && norm(prior.web_desc) === norm(item.web_desc)
             ) {
                 skipped++;
                 continue;
